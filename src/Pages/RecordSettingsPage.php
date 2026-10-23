@@ -208,16 +208,6 @@ abstract class RecordSettingsPage extends Page
         return null;
     }
 
-    public static function getNavigationLabel(): string
-    {
-        return static::$navigationLabel ?? static::$title ?? __('filament-record-settings::record-settings.page.title');
-    }
-
-    public function getTitle(): string
-    {
-        return static::$title ?? __('filament-record-settings::record-settings.page.title');
-    }
-
     public function defaultForm(Schema $schema): Schema
     {
         return $schema
