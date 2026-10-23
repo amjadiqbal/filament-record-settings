@@ -6,6 +6,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-23
+
+### Fixed
+
+- `EditRecordSettingsAction`: your own `->authorize()` no longer replaces the `updateSettings` policy check; both
+  must pass.
+- `->recordSetting()` fields: a glorand `$settingsRules` failure shows under the field and the save stops, instead of
+  an error with no field.
+
+### Documentation
+
+- README: the order defaults are read in, that glorand models ignore page and action defaults, how `recordSetting()`
+  fields are filled on create and edit, that array values replace their key as a whole, what happens with no policy
+  method, the command's `--force`, and the screenshot's alt text.
+
 ## [1.0.0] - 2026-10-23
 
 ### Added
@@ -18,5 +33,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - `make:filament-record-settings-page` command.
 - `getSettingRecord()` and `->isModelSetting()` still work for pages moved from quadrubo/filament-model-settings.
 
-[Unreleased]: https://github.com/amjadiqbal/filament-record-settings/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/amjadiqbal/filament-record-settings/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/amjadiqbal/filament-record-settings/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/amjadiqbal/filament-record-settings/releases/tag/v1.0.0

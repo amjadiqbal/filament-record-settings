@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use AmjadIqbal\FilamentRecordSettings\Actions\EditRecordSettingsAction;
 use AmjadIqbal\FilamentRecordSettings\Tests\Fixtures\CreateProject;
 use AmjadIqbal\FilamentRecordSettings\Tests\Fixtures\EditProject;
 use AmjadIqbal\FilamentRecordSettings\Tests\Fixtures\ListProjects;
@@ -36,6 +37,19 @@ it('hides the row action when the policy denies updateSettings', function (): vo
 
     Livewire::test(ListProjects::class)
         ->assertActionHidden(TestAction::make('editSettings')->table($this->project));
+});
+
+it('keeps the policy check when the action has its own authorize()', function (): void {
+    ProjectPolicy::$canUpdateSettings = false;
+
+    $action = EditRecordSettingsAction::make()->record($this->project)->authorize(fn (): bool => true);
+
+    expect($action->isAuthorized())->toBeFalse();
+
+    ProjectPolicy::$canUpdateSettings = true;
+
+    expect(EditRecordSettingsAction::make()->record($this->project)->authorize(fn (): bool => false)->isAuthorized())->toBeFalse()
+        ->and(EditRecordSettingsAction::make()->record($this->project)->authorize(fn (): bool => true)->isAuthorized())->toBeTrue();
 });
 
 it('fills recordSetting() fields on the edit page and saves them without losing other keys', function (): void {

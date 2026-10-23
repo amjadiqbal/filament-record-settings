@@ -18,7 +18,7 @@ driver) or in a plain JSON column.
 [![PHP Version](https://img.shields.io/packagist/php-v/amjadiqbal/filament-record-settings?style=flat-square)](https://packagist.org/packages/amjadiqbal/filament-record-settings)
 [![License](https://img.shields.io/packagist/l/amjadiqbal/filament-record-settings.svg?style=flat-square)](LICENSE.md)
 
-![A user preferences page built with Record Settings in a Filament panel](https://raw.githubusercontent.com/amjadiqbal/filament-record-settings/main/art/screenshots/page-light.png)
+![A team settings page built with Record Settings in a Filament panel](https://raw.githubusercontent.com/amjadiqbal/filament-record-settings/main/art/screenshots/page-light.png)
 
 <p align="center">
   <img alt="The settings modal on a table row, in dark mode" src="https://raw.githubusercontent.com/amjadiqbal/filament-record-settings/main/art/screenshots/action-dark.png" width="100%">
@@ -35,9 +35,10 @@ driver) or in a plain JSON column.
 - **Two backends, picked for you.** A model that uses glorand/laravel-model-settings goes through glorand, with its
   defaults, its `$settingsRules` and whichever driver it uses (field, table, Redis, cache). Any other model keeps its
   settings in a JSON column (`settings` unless you name another one).
-- **Only the keys the form shows are written.** Other settings in the same column or store are kept.
+- **Only the keys the form shows are written.** Other top-level settings in the same column or store are kept. A
+  field that holds an array (a repeater, a key-value field) replaces that key as a whole.
 - **Policies.** When the record's policy has an `updateSettings` method, the page and the action ask it. The ability
-  name is configurable.
+  name is configurable. Without such a method the plugin adds no check (see [Policies](#policies)).
 - **Plain Filament UI.** Only core components, so it looks right in any panel and theme, light and dark, with no
   stylesheet or build step.
 
@@ -81,7 +82,8 @@ protected function casts(): array
 php artisan make:filament-record-settings-page ManagePreferences
 ```
 
-This writes `app/Filament/Pages/ManagePreferences.php` (or the panel's page directory; pass `--panel=` to choose).
+This writes `app/Filament/Pages/ManagePreferences.php` (or the panel's page directory; pass `--panel=` to choose,
+and `--force` to overwrite an existing file).
 Fill in the form:
 
 ```php
@@ -122,7 +124,7 @@ Options on the page class:
 protected static ?string $settingsColumn = 'preferences';       // JSON column; null = glorand or `settings`
 protected static ?string $settingsAbility = 'updateSettings';   // policy method; null = no policy check
 
-public static function getSettingsDefaults(): array             // defaults for the JSON column
+public static function getSettingsDefaults(): array             // fallback defaults, JSON column only
 {
     return ['theme' => 'system'];
 }
@@ -165,7 +167,7 @@ public static function table(Table $table): Table
         ->recordActions([
             EditRecordSettingsAction::make()
                 ->settingsColumn('prefs')                // optional
-                ->settingsDefaults(['color' => '#0d9488']) // optional, for the JSON column
+                ->settingsDefaults(['color' => '#0d9488']) // optional fallbacks, JSON column only
                 ->schema([
                     ColorPicker::make('color'),
                     Toggle::make('archived_view'),
@@ -175,7 +177,8 @@ public static function table(Table $table): Table
 ```
 
 It works as a header action on a view or edit page too. `->settingsAbility('manageSettings')` changes the policy
-method; `->settingsAbility(null)` turns the check off.
+method; `->settingsAbility(null)` turns the check off. Your own `->authorize()` or `->visible()` adds to the policy
+check; it does not replace it.
 
 ### Fields in a resource form
 
@@ -187,8 +190,22 @@ Toggle::make('prefs.public')->recordSetting(),              // JSON column `pref
 ```
 
 The part before the first dot is the prefix: the JSON column for the column store. On a glorand model the prefix only
-groups the fields, and the value goes through glorand. The value is filled from the settings (defaults included) and
-written after the record is saved, so it works on the create page too.
+groups the fields, and the value goes through glorand. On the edit page the field is filled from the stored settings
+and the model's defaults; on the create page the field's own `->default()` applies. The value is written after the
+record is saved, so it works on create too. A glorand `$settingsRules` failure shows under the field and nothing is
+saved.
+
+## Defaults
+
+Values are read in this order, the later one winning:
+
+1. the page's `getSettingsDefaults()` or the action's `->settingsDefaults()` (JSON column only),
+2. the model's defaults: `getDefaultSettings()` or a `$defaultSettings` property,
+3. the stored settings.
+
+A glorand model uses glorand's own defaults (`$defaultSettings` or `config('model_settings.defaultSettings')`), and
+page and action defaults are not used for it. Defaults are only shown: a default is saved when the form shows it and
+the user submits the form.
 
 ## Policies
 
@@ -204,9 +221,11 @@ class TeamPolicy
 }
 ```
 
-With no such method, the plugin adds no check of its own. The page still needs a record (a signed-in user, or
-whatever `getSettingsRecord()` returns) and its usual `canAccess()`; the action follows your own `visible()` or
-`authorize()`; resource fields follow the resource's policy.
+**With no such method, the plugin adds no check of its own.** Then anyone who can open the page, see the table row
+or edit the record can change its settings. The page still needs a record (a signed-in user, or whatever
+`getSettingsRecord()` returns) and its usual `canAccess()`; on the action, add `->visible()` or `->authorize()`
+conditions (they are added to the policy check); resource fields follow the resource's own policy. For a per-user
+preferences page that is usually what you want; for team, tenant or record settings, add the policy method.
 
 ## Coming from quadrubo/filament-model-settings
 

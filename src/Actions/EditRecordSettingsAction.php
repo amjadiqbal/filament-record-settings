@@ -51,8 +51,6 @@ class EditRecordSettingsAction extends Action
 
         $this->color('gray');
 
-        $this->authorize(fn (?Model $record): bool => $record !== null && RecordSettings::can($record, $this->getSettingsAbility()));
-
         $this->fillForm(fn (Model $record): array => $this->getSettingsStoreFor($record)->get($record));
 
         $this->action(function (Model $record, array $data): void {
@@ -111,6 +109,20 @@ class EditRecordSettingsAction extends Action
     public function getSettingsAbility(): ?string
     {
         return $this->evaluate($this->settingsAbility);
+    }
+
+    /**
+     * The policy check is added to your own `authorize()` and `visible()`, not replaced by them.
+     */
+    protected function resolveIsAuthorized(): bool
+    {
+        $record = $this->getRecord();
+
+        if (! $record instanceof Model || ! RecordSettings::can($record, $this->getSettingsAbility())) {
+            return false;
+        }
+
+        return parent::resolveIsAuthorized();
     }
 
     protected function getSettingsStoreFor(Model $record): SettingsStore

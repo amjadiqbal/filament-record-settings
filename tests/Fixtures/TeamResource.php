@@ -20,6 +20,7 @@ class TeamResource extends Resource
         return $schema->components([
             TextInput::make('name')->required(),
             Select::make('settings.locale')->options(['en' => 'English', 'de' => 'Deutsch'])->recordSetting(),
+            TextInput::make('settings.seats')->numeric()->recordSetting(),
         ]);
     }
 

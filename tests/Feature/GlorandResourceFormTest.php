@@ -32,6 +32,20 @@ it('edits a glorand field-driver setting in a resource form and keeps the other 
         ->and($team->settings()->get('beta'))->toBeTrue();
 });
 
+it('shows a glorand settingsRules failure under the resource field and saves nothing', function (): void {
+    $team = Team::query()->findOrFail(Team::query()->create(['name' => 'Core'])->id);
+
+    Livewire::test(EditTeam::class, ['record' => $team->getRouteKey()])
+        ->fillForm(['name' => 'Renamed', 'settings.seats' => 80])
+        ->call('save')
+        ->assertHasErrors(['data.settings.seats']);
+
+    $team = Team::query()->findOrFail($team->id);
+
+    expect($team->name)->toBe('Core')
+        ->and((int) $team->settings()->get('seats'))->toBe(5);
+});
+
 it('edits a glorand table-driver setting in a resource form without touching the model table', function (): void {
     $org = Org::query()->create(['name' => 'Acme']);
     $org->settings()->setMultiple(['locale' => 'en', 'plan' => 'pro']);

@@ -8,7 +8,9 @@ use AmjadIqbal\FilamentRecordSettings\Stores\ColumnStore;
 use AmjadIqbal\FilamentRecordSettings\Stores\GlorandStore;
 use Filament\Forms\Components\Field;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use WeakMap;
 
 /**
@@ -74,6 +76,11 @@ class RecordSettingField
 
                 try {
                     $store->put($record, [$key => $value]);
+                } catch (ValidationException $exception) {
+                    // A glorand `$settingsRules` failure belongs under this field.
+                    throw ValidationException::withMessages([
+                        $component->getStatePath() => Arr::flatten($exception->errors()),
+                    ]);
                 } finally {
                     static::$writing = false;
                 }
