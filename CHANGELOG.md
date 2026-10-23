@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-23
+
 ### Added
 
 - `RecordSettingsPage`: a settings page for one record, the signed-in user by default.
@@ -15,3 +17,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - `updateSettings` policy check, configurable per page and action.
 - `make:filament-record-settings-page` command.
 - `getSettingRecord()` and `->isModelSetting()` still work for pages moved from quadrubo/filament-model-settings.
+
+[Unreleased]: https://github.com/amjadiqbal/filament-record-settings/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/amjadiqbal/filament-record-settings/releases/tag/v1.0.0
