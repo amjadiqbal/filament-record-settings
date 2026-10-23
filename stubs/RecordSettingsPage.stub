@@ -1,0 +1,32 @@
+<?php
+
+namespace {{ namespace }};
+
+use AmjadIqbal\FilamentRecordSettings\Pages\RecordSettingsPage;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Schema;
+
+class {{ class }} extends RecordSettingsPage
+{
+    // Edits the signed-in user's settings. Override getSettingsRecord() for a tenant, a team or another model:
+    // public static function getSettingsRecord(): ?\Illuminate\Database\Eloquent\Model { return \Filament\Facades\Filament::getTenant(); }
+
+    // The JSON column, when the model does not use glorand/laravel-model-settings:
+    // protected static ?string $settingsColumn = 'settings';
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Select::make('theme')
+                    ->options([
+                        'system' => 'System',
+                        'light' => 'Light',
+                        'dark' => 'Dark',
+                    ])
+                    ->default('system'),
+                Toggle::make('email_digest'),
+            ]);
+    }
+}

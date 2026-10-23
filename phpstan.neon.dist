@@ -1,0 +1,25 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - tests/Fixtures
+    excludePaths:
+        # One trait per glorand major (8 or 9); only one of the two branches exists in any install.
+        - tests/Fixtures/GlorandSettings.php
+        - tests/Fixtures/GlorandTableSettings.php
+    tmpDir: build/phpstan
+    # The suite runs against Filament 4 and 5 and glorand 8 and 9; an ignore may match on one and not the other.
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Macro closures run bound to the Field they are called on.
+        -
+            identifier: argument.type
+            path: src/FilamentRecordSettingsServiceProvider.php
+        # recordSetting() / isModelSetting() are Field macros.
+        -
+            message: '#::(recordSetting|isModelSetting)\(\)#'
+            identifier: method.notFound
+            path: tests/Fixtures/*

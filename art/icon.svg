@@ -1,0 +1,29 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1220"/>
+      <stop offset="100%" stop-color="#0B2A33"/>
+    </linearGradient>
+    <linearGradient id="iconbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#134E4A"/>
+    </linearGradient>
+  </defs>
+<g>
+    <rect width="512" height="512" rx="112" fill="url(#iconbg)"/>
+    <rect x="76" y="96" width="330" height="300" rx="34" fill="#F8FAFC"/>
+    <circle cx="136" cy="156" r="32" fill="#0D9488"/>
+    <circle cx="136" cy="146" r="11" fill="#F8FAFC"/>
+    <path d="M114 176a22 16 0 0 1 44 0z" fill="#F8FAFC"/>
+    <rect x="186" y="136" width="150" height="18" rx="9" fill="#0F172A"/>
+    <rect x="186" y="166" width="96" height="12" rx="6" fill="#94A3B8"/>
+    <rect x="108" y="222" width="140" height="14" rx="7" fill="#94A3B8"/>
+    <rect x="290" y="210" width="80" height="40" rx="20" fill="#0D9488"/>
+    <circle cx="350" cy="230" r="15" fill="#FFFFFF"/>
+    <rect x="108" y="296" width="110" height="14" rx="7" fill="#94A3B8"/>
+    <rect x="290" y="284" width="80" height="40" rx="20" fill="#CBD5E1"/>
+    <circle cx="310" cy="304" r="15" fill="#FFFFFF"/>
+    <circle cx="396" cy="396" r="78" fill="#0D9488" stroke="#0F172A" stroke-width="14"/>
+    <g transform="translate(396 396) scale(3.6) translate(-12 -12)" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></g>
+</g>
+</svg>
