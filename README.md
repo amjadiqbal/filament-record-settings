@@ -192,8 +192,12 @@ Toggle::make('prefs.public')->recordSetting(),              // JSON column `pref
 The part before the first dot is the prefix: the JSON column for the column store. On a glorand model the prefix only
 groups the fields, and the value goes through glorand. On the edit page the field is filled from the stored settings
 and the model's defaults; on the create page the field's own `->default()` applies. The value is written after the
-record is saved, so it works on create too. A glorand `$settingsRules` failure shows under the field and nothing is
-saved.
+record is saved, so it works on create too. A nested name (`settings.notify.email`) writes inside its key and keeps
+that key's other values.
+
+A glorand `$settingsRules` failure shows under the field, and that value is not saved. On the edit page the record's
+own fields are not saved either. Each setting field writes on its own, so a field that passed before the failing one
+is already stored; on the create page the new record is kept unless the panel uses `->databaseTransactions()`.
 
 ## Defaults
 
@@ -203,7 +207,8 @@ Values are read in this order, the later one winning:
 2. the model's defaults: `getDefaultSettings()` or a `$defaultSettings` property,
 3. the stored settings.
 
-A glorand model uses glorand's own defaults (`$defaultSettings` or `config('model_settings.defaultSettings')`), and
+A glorand model uses glorand's own defaults (`$defaultSettings`, or `config('model_settings.defaultSettings.<table>')`
+keyed by the model's table), and
 page and action defaults are not used for it. Defaults are only shown: a default is saved when the form shows it and
 the user submits the form.
 
@@ -229,7 +234,7 @@ preferences page that is usually what you want; for team, tenant or record setti
 
 ## Coming from quadrubo/filament-model-settings
 
-This package is a separate, new implementation for Filament 4 and 5, glorand 8 and 9 and Laravel 13. The names you
+This package is a separate, new implementation for Filament 4 and 5, Laravel 12 and 13 and glorand 8 and 9. The names you
 used still work, so moving is mostly an import change:
 
 | quadrubo/filament-model-settings | Record Settings |

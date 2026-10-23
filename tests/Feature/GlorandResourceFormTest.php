@@ -46,6 +46,22 @@ it('shows a glorand settingsRules failure under the resource field and saves not
         ->and((int) $team->settings()->get('seats'))->toBe(5);
 });
 
+it('fills and saves a nested recordSetting() field through glorand', function (): void {
+    $team = Team::query()->findOrFail(Team::query()->create(['name' => 'Core'])->id);
+    $team->settings()->setMultiple(['limits' => ['api' => 100, 'exports' => 3]]);
+
+    Livewire::test(EditTeam::class, ['record' => $team->getRouteKey()])
+        ->assertSchemaStateSet(['settings.limits.api' => 100])
+        ->fillForm(['settings.limits.api' => 250])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    $limits = Team::query()->findOrFail($team->id)->settings()->get('limits');
+
+    expect((int) $limits['api'])->toBe(250)
+        ->and($limits['exports'])->toBe(3);
+});
+
 it('edits a glorand table-driver setting in a resource form without touching the model table', function (): void {
     $org = Org::query()->create(['name' => 'Acme']);
     $org->settings()->setMultiple(['locale' => 'en', 'plan' => 'pro']);

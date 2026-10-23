@@ -21,6 +21,7 @@ class TeamResource extends Resource
             TextInput::make('name')->required(),
             Select::make('settings.locale')->options(['en' => 'English', 'de' => 'Deutsch'])->recordSetting(),
             TextInput::make('settings.seats')->numeric()->recordSetting(),
+            TextInput::make('settings.limits.api')->numeric()->recordSetting(),
         ]);
     }
 

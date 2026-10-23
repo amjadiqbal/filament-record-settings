@@ -23,6 +23,7 @@ class ProjectResource extends Resource
             TextInput::make('name')->required(),
             Toggle::make('prefs.public')->recordSetting(),
             Select::make('prefs.visibility')->options(['team' => 'Team', 'org' => 'Organisation'])->recordSetting(),
+            Toggle::make('prefs.notify.email')->recordSetting(),
         ]);
     }
 

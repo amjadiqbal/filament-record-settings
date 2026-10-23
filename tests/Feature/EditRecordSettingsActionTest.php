@@ -62,7 +62,19 @@ it('fills recordSetting() fields on the edit page and saves them without losing 
     $project = $this->project->fresh();
 
     expect($project->name)->toBe('Artemis')
-        ->and($project->prefs)->toBe(['public' => false, 'pinned' => 3, 'visibility' => 'org']);
+        ->and($project->prefs)->toBe(['public' => false, 'pinned' => 3, 'visibility' => 'org', 'notify' => ['email' => false]]);
+});
+
+it('writes a nested recordSetting() field inside its key in the JSON column', function (): void {
+    $this->project->update(['prefs' => ['notify' => ['email' => false, 'sms' => true]]]);
+
+    Livewire::test(EditProject::class, ['record' => $this->project->getRouteKey()])
+        ->assertSchemaStateSet(['prefs.notify.email' => false])
+        ->fillForm(['prefs.notify.email' => true])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($this->project->fresh()->prefs['notify'])->toBe(['email' => true, 'sms' => true]);
 });
 
 it('saves recordSetting() fields on create', function (): void {
@@ -71,7 +83,7 @@ it('saves recordSetting() fields on create', function (): void {
         ->call('create')
         ->assertHasNoFormErrors();
 
-    expect(Project::query()->where('name', 'Gemini')->sole()->prefs)->toBe(['public' => true, 'visibility' => 'team']);
+    expect(Project::query()->where('name', 'Gemini')->sole()->prefs)->toEqual(['public' => true, 'visibility' => 'team', 'notify' => ['email' => false]]);
 });
 
 it('registers the isModelSetting() alias for migrated forms', function (): void {

@@ -6,6 +6,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-23
+
+### Fixed
+
+- `->recordSetting()` fields with a nested name (`settings.notify.email`) are filled from glorand and the JSON column,
+  and saved inside their key, keeping its other values. Before, they were not filled on glorand models and the JSON
+  column stored a literal `notify.email` key.
+
+### Documentation
+
+- README: what a glorand rule failure on a `recordSetting()` field does and does not save; glorand's config defaults
+  are keyed by table; Laravel 12 and 13 in the migration section.
+
 ## [1.0.1] - 2026-10-23
 
 ### Fixed
@@ -33,6 +46,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - `make:filament-record-settings-page` command.
 - `getSettingRecord()` and `->isModelSetting()` still work for pages moved from quadrubo/filament-model-settings.
 
-[Unreleased]: https://github.com/amjadiqbal/filament-record-settings/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/amjadiqbal/filament-record-settings/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/amjadiqbal/filament-record-settings/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/amjadiqbal/filament-record-settings/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/amjadiqbal/filament-record-settings/releases/tag/v1.0.0

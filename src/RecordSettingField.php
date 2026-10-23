@@ -57,8 +57,8 @@ class RecordSettingField
 
                 $settings = static::store($record, $prefix)->get($record);
 
-                if (array_key_exists($key, $settings)) {
-                    $component->state($settings[$key]);
+                if (Arr::has($settings, $key)) {
+                    $component->state(Arr::get($settings, $key));
                 }
             })
             ->dehydrated(false)
@@ -68,14 +68,14 @@ class RecordSettingField
                 }
 
                 $store = static::store($record, $prefix);
-                $value = $component->getState();
+                [$top, $value] = static::topLevelValue($store, $record, $key, $component->getState());
 
-                static::guard($record, $prefix, $key, $value, $store instanceof ColumnStore);
+                static::guard($record, $prefix, $top, $value, $store instanceof ColumnStore);
 
                 static::$writing = true;
 
                 try {
-                    $store->put($record, [$key => $value]);
+                    $store->put($record, [$top => $value]);
                 } catch (ValidationException $exception) {
                     // A glorand `$settingsRules` failure belongs under this field.
                     throw ValidationException::withMessages([
@@ -85,6 +85,27 @@ class RecordSettingField
                     static::$writing = false;
                 }
             });
+    }
+
+    /**
+     * A nested field name (`settings.notify.email`) writes inside its top-level key, keeping that key's other values,
+     * the same way in the JSON column and in glorand.
+     *
+     * @return array{0: string, 1: mixed}
+     */
+    protected static function topLevelValue(Contracts\SettingsStore $store, Model $record, string $key, mixed $state): array
+    {
+        if (! str_contains($key, '.')) {
+            return [$key, $state];
+        }
+
+        $top = Str::before($key, '.');
+        $value = $record->exists ? ($store->get($record)[$top] ?? []) : [];
+        $value = is_array($value) ? $value : [];
+
+        Arr::set($value, Str::after($key, '.'), $state);
+
+        return [$top, $value];
     }
 
     protected static function store(Model $record, string $prefix): Contracts\SettingsStore
